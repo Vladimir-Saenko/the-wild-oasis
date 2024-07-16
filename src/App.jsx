@@ -1,18 +1,52 @@
-import styled from "styled-components";
 import GlobalStyles from "./styles/GlobalStyles";
-
-const H1 = styled.h1`
-  font-size: 30px;
-  font-weight: 600;
-  background-color: var(--color-brand-500);
-  color: var(--color-brand-50);
-`;
+import Heading from "./ui/Heading";
+import Button from "./ui/Button";
+import Row from "./ui/Row";
 
 function App() {
   return (
     <>
       <GlobalStyles /> {/* Загрузка глобальных стилей */}
-      <H1>The Wild Oasis</H1>
+      <Row type="horizontal">
+        <Heading as="h1">The Wild Oasis</Heading>
+        <div>
+          <Button
+            size="medium"
+            variation="primary"
+            onClick={() => alert("Check In!")}
+          >
+            Check In
+          </Button>
+          <Button
+            size="medium"
+            variation="secondary"
+            onClick={() => alert("Check Out!")}
+          >
+            Check Out
+          </Button>
+        </div>
+      </Row>
+      <Row>
+        <Heading as="h2">Check and quit</Heading>
+        <div>
+          <div>
+            <Button
+              size="small"
+              variation="primary"
+              onClick={() => alert("Check In!")}
+            >
+              Check In
+            </Button>
+            <Button
+              size="small"
+              variation="danger"
+              onClick={() => alert("Check Out!")}
+            >
+              Check Out
+            </Button>
+          </div>
+        </div>
+      </Row>
     </>
   );
 }
