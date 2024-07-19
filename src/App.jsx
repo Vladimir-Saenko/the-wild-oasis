@@ -1,52 +1,33 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import GlobalStyles from "./styles/GlobalStyles";
-import Heading from "./ui/Heading";
-import Button from "./ui/Button";
-import Row from "./ui/Row";
+import Dashboard from "./pages/Dashboard";
+import Account from "./pages/Account";
+import Bookings from "./pages/Bookings";
+import Cabins from "./pages/Cabins";
+import Login from "./pages/Login";
+import PageNotFound from "./pages/PageNotFound";
+import Settings from "./pages/Settings";
+import Users from "./pages/Users";
 
 function App() {
   return (
     <>
-      <GlobalStyles /> {/* Загрузка глобальных стилей */}
-      <Row type="horizontal">
-        <Heading as="h1">The Wild Oasis</Heading>
-        <div>
-          <Button
-            size="medium"
-            variation="primary"
-            onClick={() => alert("Check In!")}
-          >
-            Check In
-          </Button>
-          <Button
-            size="medium"
-            variation="secondary"
-            onClick={() => alert("Check Out!")}
-          >
-            Check Out
-          </Button>
-        </div>
-      </Row>
-      <Row>
-        <Heading as="h2">Check and quit</Heading>
-        <div>
-          <div>
-            <Button
-              size="small"
-              variation="primary"
-              onClick={() => alert("Check In!")}
-            >
-              Check In
-            </Button>
-            <Button
-              size="small"
-              variation="danger"
-              onClick={() => alert("Check Out!")}
-            >
-              Check Out
-            </Button>
-          </div>
-        </div>
-      </Row>
+      <GlobalStyles />
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Navigate to="dashboard" />} />
+
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="account" element={<Account />} />
+          <Route path="bookings" element={<Bookings />} />
+          <Route path="cabins" element={<Cabins />} />
+          <Route path="login" element={<Login />} />
+          <Route path="users" element={<Users />} />
+          <Route path="settings" element={<Settings />} />
+
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

@@ -10,15 +10,13 @@ const Heading = styled.h1`
     css`
       font-size: 3rem;
       font-weight: 600;
-      background-color: var(--color-brand-500);
-      color: var(--color-brand-50);
+      color: var(--color-brand-800);
     `}
   ${(props) =>
     props.as === "h2" &&
     css`
       font-size: 2rem;
       font-weight: 500;
-      background-color: var(--color-brand-200);
     `}
 
   ${centerPosition}
