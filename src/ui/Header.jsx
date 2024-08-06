@@ -7,11 +7,7 @@ const StyledHeader = styled.header`
 `;
 
 function Header() {
-  return (
-    <div>
-      <StyledHeader>HEADER</StyledHeader>
-    </div>
-  );
+  return <StyledHeader>HEADER</StyledHeader>;
 }
 
 export default Header;
