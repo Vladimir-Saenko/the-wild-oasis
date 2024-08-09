@@ -1,21 +1,29 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
-import { useForm } from "react-hook-form";
-import { createCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createCabin, updateCabin } from "../../services/apiCabins";
 
-function CreateCabinForm() {
+// eslint-disable-next-line react/prop-types
+function CabinForm({ editCabin = {} }) {
+  const { id: editId, ...editValues } = editCabin;
+  const isEditMode = Boolean(editId);
+
   // eslint-disable-next-line no-unused-vars
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: isEditMode ? editValues : {},
+  });
   const { errors } = formState;
   const queryClient = useQueryClient();
 
-  const { isLoading: isCreating, mutate } = useMutation({
+  // Создание нового домика
+  const { isLoading: isCreating, mutate: creationCabin } = useMutation({
     mutationFn: createCabin,
     onSuccess: () => {
       toast.success("Cabin succesfully created.");
@@ -27,8 +35,26 @@ function CreateCabinForm() {
     onError: (err) => toast.error(err.message),
   });
 
+  // Редактирование домика
+  const { isLoading: isEditing, mutate: updatingCabin } = useMutation({
+    mutationFn: ({ cabinNewData, id }) => updateCabin(cabinNewData, id),
+    onSuccess: () => {
+      toast.success("Cabin succesfully updating.");
+      queryClient.invalidateQueries({
+        queryKey: ["cabins"],
+      });
+      reset();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const isWorking = isCreating | isEditing;
+
   function onSubmit(data) {
-    mutate(data);
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+
+    if (!isEditMode) creationCabin({ ...data, image });
+    else updatingCabin({ cabinNewData: { ...data, image }, id: editId });
   }
 
   function onError(errors) {
@@ -48,6 +74,7 @@ function CreateCabinForm() {
           {...register("name", {
             required: "This field is required.",
           })}
+          disabled={isWorking}
         />
       </FormRow>
 
@@ -66,6 +93,7 @@ function CreateCabinForm() {
               message: "Capacity shold be at least 1.",
             },
           })}
+          disabled={isWorking}
         />
       </FormRow>
 
@@ -84,6 +112,7 @@ function CreateCabinForm() {
               message: "Price shold be at least 0",
             },
           })}
+          disabled={isWorking}
         />
       </FormRow>
 
@@ -101,6 +130,7 @@ function CreateCabinForm() {
             validate: (value) =>
               Number(value) < Number(getValues().regularPrice),
           })}
+          disabled={isWorking}
         />
       </FormRow>
 
@@ -116,6 +146,7 @@ function CreateCabinForm() {
           {...register("description", {
             required: "This field is required.",
           })}
+          disabled={isWorking}
         />
       </FormRow>
 
@@ -124,7 +155,13 @@ function CreateCabinForm() {
         fieldName="image"
         errorMessage={errors?.image?.message}
       >
-        <FileInput id="image" accept="image/*" />
+        <FileInput
+          id="image"
+          accept="image/*"
+          type="file"
+          {...register("image")}
+          disabled={isWorking}
+        />
       </FormRow>
 
       <FormRow>
@@ -132,10 +169,12 @@ function CreateCabinForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isCreating}>Add cabin</Button>
+        <Button disabled={isWorking}>
+          {isEditMode ? "Edit cabin" : "Add cabin"}
+        </Button>
       </FormRow>
     </Form>
   );
 }
 
-export default CreateCabinForm;
+export default CabinForm;
