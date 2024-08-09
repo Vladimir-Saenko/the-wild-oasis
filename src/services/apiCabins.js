@@ -53,7 +53,9 @@ export async function updateCabin(cabinNewData, editId) {
   // Проверяем, изменяется ли картинка
   const imageName = !image.toString().startsWith(supabaseUrl)
     ? `_${randomStr.slice(2, 9)}-${cabinNewData.image.name}`
-    : image;
+    : image.slice(imagePath.length);
+
+  console.log(image, imageName);
 
   const { data, error } = await supabase
     .from("cabins")
@@ -67,7 +69,7 @@ export async function updateCabin(cabinNewData, editId) {
   }
 
   // Если картинка изменилась, загружаем её в хранилище
-  if (image !== imageName) {
+  if (image !== `${imagePath}${imageName}`) {
     const { error: updateImageError } = await supabase.storage
       .from("cabin-images")
       .upload(imageName, cabinNewData.image);
