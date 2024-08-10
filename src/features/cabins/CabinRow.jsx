@@ -1,12 +1,10 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import CabinForm from "./CabinForm";
+import { useDeleteCabin } from "./useDeleteCabin";
+import { useCreateCabin } from "./useCreateCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -64,20 +62,21 @@ function CabinRow({ cabin }) {
     description,
   } = cabin;
 
-  const queryClient = useQueryClient();
-
   const [showForm, setShowForm] = useState(false);
 
-  const { isLoading: isDeleting, mutate } = useMutation({
-    mutationFn: deleteCabin,
-    onSuccess: () => {
-      toast.success("Cabin succesfully deleted.");
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const { isDeleting, deleteCabin } = useDeleteCabin();
+  const { isCreating, creationCabin } = useCreateCabin();
+
+  function handleCopyCabin() {
+    creationCabin({
+      name: `Copy ${name}`,
+      image,
+      maxCapacity,
+      regularPrice,
+      discount,
+      description,
+    });
+  }
 
   return (
     <>
@@ -92,8 +91,19 @@ function CabinRow({ cabin }) {
           <span>&mdash;</span>
         )}
         <div>
-          <button onClick={() => setShowForm((show) => !show)}>Edit</button>
-          <button onClick={() => mutate(cabinId)} disabled={isDeleting}>
+          <button onClick={handleCopyCabin} disabled={isDeleting | isCreating}>
+            Copy
+          </button>
+          <button
+            onClick={() => setShowForm((show) => !show)}
+            disabled={isDeleting | isCreating}
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => deleteCabin(cabinId)}
+            disabled={isDeleting | isCreating}
+          >
             Delete
           </button>
         </div>

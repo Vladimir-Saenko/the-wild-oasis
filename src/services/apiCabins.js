@@ -18,11 +18,17 @@ const randomStr = Math.random().toString(36); // toString(36) - [0-9] + [a-z]
 export async function createCabin(newCabin) {
   // Создание имени файла для картинки из случайных цифр, латинских букв и исходного имени
   const imageName = `_${randomStr.slice(2, 9)}-${newCabin.image.name}`;
+  const hasImage = newCabin.image?.startsWith(supabaseUrl);
 
   // 1. Создание домика
   const { data, error } = await supabase
     .from("cabins")
-    .insert([{ ...newCabin, image: `${imagePath}${imageName}` }])
+    .insert([
+      {
+        ...newCabin,
+        image: hasImage ? newCabin.image : `${imagePath}${imageName}`,
+      },
+    ])
     .select();
 
   if (error) {
@@ -31,18 +37,20 @@ export async function createCabin(newCabin) {
   }
 
   // 2. Если нет ошибки, то загружаем картинку
-  const { error: storageError } = await supabase.storage
-    .from("cabin-images")
-    .upload(imageName, newCabin.image);
+  if (!hasImage) {
+    const { error: storageError } = await supabase.storage
+      .from("cabin-images")
+      .upload(imageName, newCabin.image);
 
-  // 3. Если файл не загрузился, то удаляем домик из БД
-  if (storageError) {
-    await supabase.from("cabins").delete().eq("id", data.id);
+    // 3. Если файл не загрузился, то удаляем домик из БД
+    if (storageError) {
+      await supabase.from("cabins").delete().eq("id", data.id);
 
-    console.log(storageError);
-    throw new Error(
-      "Cabin image could not be uploaded and cabin was not created."
-    );
+      console.log(storageError);
+      throw new Error(
+        "Cabin image could not be uploaded and cabin was not created."
+      );
+    }
   }
 
   return data;
