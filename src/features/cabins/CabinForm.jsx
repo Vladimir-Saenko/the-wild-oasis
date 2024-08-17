@@ -10,7 +10,7 @@ import { useCreateCabin } from "./useCreateCabin";
 import { useUpdateCabin } from "./useUpdateCabin";
 
 // eslint-disable-next-line react/prop-types
-function CabinForm({ editCabin = {} }) {
+function CabinForm({ editCabin = {}, onCloseModal }) {
   const { id: editId, ...editValues } = editCabin;
   const isEditMode = Boolean(editId);
 
@@ -33,24 +33,35 @@ function CabinForm({ editCabin = {} }) {
       creationCabin(
         { ...data, image },
         {
-          onSuccess: () => reset(),
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
     else
       updatingCabin(
         { cabinNewData: { ...data, image }, id: editId },
         {
-          onSuccess: () => reset(),
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
   }
 
   function onError(errors) {
     console.log(errors);
+    reset();
+    onCloseModal?.();
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow
         label="Cabin name"
         fieldName="name"
@@ -154,7 +165,11 @@ function CabinForm({ editCabin = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>
