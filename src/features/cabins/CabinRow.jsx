@@ -86,65 +86,63 @@ function CabinRow({ cabin }) {
   }
 
   return (
-    <>
-      <Table.Row>
-        <Img src={image}></Img>
-        <Cabin>{name}</Cabin>
-        <Capacity>Up to {maxCapacity}</Capacity>
-        <Price>{formatCurrency(regularPrice)}</Price>
-        {discount ? (
-          <Discount>{formatCurrency(discount)}</Discount>
-        ) : (
-          <span>&mdash;</span>
-        )}
-        <div>
-          <button
-            title="Clone cabin"
-            onClick={handleCopyCabin}
-            disabled={isDeleting | isCreating}
-          >
-            <HiDocumentDuplicate />
-          </button>
+    <Table.Row>
+      <Img src={image}></Img>
+      <Cabin>{name}</Cabin>
+      <Capacity>Up to {maxCapacity}</Capacity>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      {discount ? (
+        <Discount>{formatCurrency(discount)}</Discount>
+      ) : (
+        <span>&mdash;</span>
+      )}
+      <div>
+        <button
+          title="Clone cabin"
+          onClick={handleCopyCabin}
+          disabled={isDeleting | isCreating}
+        >
+          <HiDocumentDuplicate />
+        </button>
 
-          <Modal>
-            <Modal.Open opens="edit">
-              <button title="Edit cabin">
-                <HiPencilSquare />
-              </button>
-            </Modal.Open>
-            <Modal.Window name="edit">
-              <CabinForm editCabin={cabin} />
-            </Modal.Window>
-          </Modal>
+        <Modal>
+          <Modal.Open opens="edit">
+            <button title="Edit cabin">
+              <HiPencilSquare />
+            </button>
+          </Modal.Open>
+          <Modal.Window name="edit">
+            <CabinForm editCabin={cabin} />
+          </Modal.Window>
+        </Modal>
 
-          <Modal>
-            <Modal.Open opens="delete">
-              <button
-                title="Delete cabin"
-                // onClick={() => deleteCabin(cabinId)}
-              >
-                <HiMinusCircle />
-              </button>
-            </Modal.Open>
-            <Modal.Window name="delete">
-              <ConfirmDelete
-                resourceName="cabin"
-                onConfirm={() => deleteCabin(cabinId)}
-                disabled={isDeleting}
-              />
-            </Modal.Window>
-          </Modal>
+        <Modal>
+          <Modal.Open opens="delete">
+            <button
+              title="Delete cabin"
+              // onClick={() => deleteCabin(cabinId)}
+            >
+              <HiMinusCircle />
+            </button>
+          </Modal.Open>
+          <Modal.Window name="delete">
+            <ConfirmDelete
+              resourceName="cabin"
+              onConfirm={() => deleteCabin(cabinId)}
+              disabled={isDeleting}
+            />
+          </Modal.Window>
+        </Modal>
 
-          {/* <button
+        {/* <button
             title="Delete cabin"
             onClick={() => deleteCabin(cabinId)}
             disabled={isDeleting | isCreating}
           >
             <HiMinusCircle />
           </button> */}
-        </div>
-      </Table.Row>
-    </>
+      </div>
+    </Table.Row>
   );
 }
 
