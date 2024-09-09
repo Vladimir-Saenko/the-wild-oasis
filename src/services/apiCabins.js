@@ -18,7 +18,13 @@ const randomStr = Math.random().toString(36); // toString(36) - [0-9] + [a-z]
 export async function createCabin(newCabin) {
   // Создание имени файла для картинки из случайных цифр, латинских букв и исходного имени
   const imageName = `_${randomStr.slice(2, 9)}-${newCabin.image.name}`;
-  const hasImage = newCabin.image?.name?.startsWith(supabaseUrl);
+  const hasImage =
+    typeof newCabin.image === "string"
+      ? true
+      : newCabin.image?.name.startsWith(supabaseUrl);
+
+  console.log(newCabin.image);
+  console.log(`imageName=${imageName}; hasImage=${hasImage}`);
 
   // 1. Создание домика
   const { data, error } = await supabase
