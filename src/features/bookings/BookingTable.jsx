@@ -1,9 +1,22 @@
+/* eslint-disable no-unused-vars */
 import BookingRow from "./BookingRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
+import Spinner from "../../ui/Spinner";
+import { useQuery } from "@tanstack/react-query";
+import { getBookings } from "../../services/apiBookings";
 
 function BookingTable() {
-  const bookings = [];
+  const {
+    isLoading,
+    data: bookings,
+    error,
+  } = useQuery({
+    queryKey: ["bookings"],
+    queryFn: getBookings,
+  });
+
+  if (isLoading) return <Spinner />;
 
   return (
     <Menus>
