@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 
 function useBookings() {
   const [searchParams] = useSearchParams();
+
+  //FILTER
   const filterValue = searchParams.get("status");
 
   const filter =
@@ -12,13 +14,18 @@ function useBookings() {
       ? null
       : { field: "status", value: filterValue };
 
+  //SORT
+  const sortByValue = searchParams.get("sortBy") || "startDate-desc";
+  const [field, direction] = sortByValue.split("-");
+  const sortBy = { field, direction };
+
   const {
     isLoading,
     data: bookings,
     error,
   } = useQuery({
-    queryKey: ["bookings", filter],
-    queryFn: () => getBookings({ filter }),
+    queryKey: ["bookings", filter, sortBy],
+    queryFn: () => getBookings({ filter, sortBy }),
   });
 
   return { isLoading, bookings, error };
