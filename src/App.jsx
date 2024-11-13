@@ -10,6 +10,7 @@ import AppLayout from "./ui/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import Account from "./pages/Account";
 import Bookings from "./pages/Bookings";
+import BookingDetail from "./features/bookings/BookingDetail";
 import Cabins from "./pages/Cabins";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
@@ -41,6 +42,7 @@ function App() {
             <Route path="cabins" element={<Cabins />} />
             <Route path="users" element={<Users />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="bookings/:bookingId" element={<BookingDetail />} />
           </Route>
 
           <Route path="login" element={<Login />} />
