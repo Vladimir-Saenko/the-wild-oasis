@@ -8,13 +8,13 @@ export function useUpdateUser() {
   // Редактирование домика
   const { isLoading: isUpdating, mutate: updateUser } = useMutation({
     mutationFn: updateCurrentUser,
-    onSuccess: () => {
+    onSuccess: ({ user }) => {
       toast.success("User account succesfully updating.");
 
-      //   queryClient.setQueryData("user", user); //обновление user в кэше
-      queryClient.invalidateQueries({
-        queryKey: ["user"],
-      });
+      queryClient.setQueryData(["user"], user); //обновление user в кэше
+      //queryClient.invalidateQueries({
+      //  queryKey: ["user"],
+      //});
     },
     onError: (err) => toast.error(err.message),
   });
