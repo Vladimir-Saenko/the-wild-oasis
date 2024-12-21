@@ -89,6 +89,7 @@ function Toggle({ id }) {
   const { openId, open, close, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
+    e.stopPropagation(); // Предотвращение всплытия события onClick выше в DOM
     const rect = e.target.closest("button").getBoundingClientRect();
 
     setPosition({
@@ -108,7 +109,7 @@ function Toggle({ id }) {
 
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
-  const ref = useOutsideClick(close, true);
+  const ref = useOutsideClick(close, false); // Закрытие меню при клике за его пределами
 
   if (openId !== id) return null;
   return createPortal(

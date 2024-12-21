@@ -38,7 +38,12 @@ function TodayItem({ activity }) {
       <Guest>{guests.fullName}</Guest>
       <div>{numNights} nights</div>
       {status === "unconfirmed" && (
-        <Button variation="primary" size="small" as={Link} to={`/chekin/${id}`}>
+        <Button
+          variation="primary"
+          size="small"
+          as={Link}
+          to={`/checkin/${id}`}
+        >
           Check in
         </Button>
       )}

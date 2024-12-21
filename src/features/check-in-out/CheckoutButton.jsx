@@ -2,7 +2,6 @@
 /* eslint-disable react/prop-types */
 import Button from "../../ui/Button";
 import { useCheckout } from "./useCheckout";
-import SpinnerMini from "../../ui/SpinnerMini";
 
 function CheckoutButton({ bookingId }) {
   const { isCheckingOut, checkout } = useCheckout();
